@@ -1,0 +1,122 @@
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Results Management System</title>
+</head>
+<body>
+
+<script>
+
+// 1. Create Student Class
+class Student {
+    constructor(id, name, grades, attendance) {
+        this.id = id;
+        this.name = name;
+        this.grades = grades;
+        this.attendance = attendance;
+    }
+
+    // 2. Calculate Average using reduce
+    calculateAverage() {
+        const total = this.grades.reduce((sum, grade) => sum + grade, 0);
+        return total / this.grades.length;
+    }
+
+    // 3. Calculate Grade
+    calculateGrade() {
+        const average = this.calculateAverage();
+
+        if (average >= 90) {
+            return "A";
+        } else if (average >= 80) {
+            return "B";
+        } else if (average >= 70) {
+            return "C";
+        } else if (average >= 60) {
+            return "D";
+        } else if (average >= 50) {
+            return "E";
+        } else {
+            return "F";
+        }
+    }
+
+    // 4. Final Result
+    getFinalResult() {
+        if (this.calculateAverage() >= 50 && this.attendance >= 75) {
+            return "ناجح";
+        } else {
+            return "يحتاج مراجعة";
+        }
+    }
+}
+
+// 5. Create Students Objects Array
+const studentsList = [
+    new Student(101, "Ahmed", [90, 85, 95], 95),
+    new Student(102, "Mona", [45, 48, 42], 80),
+    new Student(103, "Ali", [70, 75, 80], 90),
+    new Student(104, "Sara", [40, 45, 48], 85)
+];
+
+// 6. Print All Students Reports
+console.log("===== ALL STUDENTS REPORT =====");
+
+studentsList.forEach(student => {
+    console.log({
+        Name: student.name,
+        Average: student.calculateAverage(),
+        Grade: student.calculateGrade(),
+        Result: student.getFinalResult()
+    });
+});
+
+// 7. Mercy Committee using filter
+const strugglingStudents = studentsList.filter(student => {
+    const average = student.calculateAverage();
+    return average >= 40 && average <= 49;
+});
+
+console.log("===== STRUGGLING STUDENTS =====");
+console.table(
+    strugglingStudents.map(student => ({
+        Name: student.name,
+        Average: student.calculateAverage()
+    }))
+);
+
+// 8. Add 5 Mercy Marks using map
+const mercyStudents = strugglingStudents.map(student => {
+    return {
+        id: student.id,
+        name: student.name,
+        oldAverage: student.calculateAverage(),
+        newAverage: student.calculateAverage() + 5
+    };
+});
+
+// 9. Calculate New Averages using reduce
+const totalNewAverages = mercyStudents.reduce(
+    (sum, student) => sum + student.newAverage,
+    0
+);
+
+// 10. Calculate Mercy Average with Zero Protection
+const mercyAverage = mercyStudents.length > 0
+    ? totalNewAverages / mercyStudents.length
+    : 0;
+
+// 11. Print Mercy Committee Results
+console.log("===== MERCY COMMITTEE RESULTS =====");
+console.table(mercyStudents);
+
+console.log("Total New Averages:", totalNewAverages);
+
+console.log("Mercy Students General Average:", mercyAverage);
+
+</script>
+
+</body>
+</html>
